@@ -1,113 +1,118 @@
-<p align="center">
-  <a href="https://www.gatsbyjs.com">
-    <img alt="Gatsby" src="https://www.gatsbyjs.com/Gatsby-Monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Starter for a Gatsby Plugin
-</h1>
+# Gatsby Plugin Fursona
 
-A minimal boilerplate for the essential files Gatsby looks for in a plugin.
+Easily generate and manage well-known fursona schema files and images for your static sites using this Gatsby plugin. Ideal for creating standardized, accessible fursona landing pages using modern frontend frameworks.
 
-## 🚀 Quick start
+This project is based on the [fursona-schema](https://github.com/pyrox0/fursona-schema) by Pyrox, which provides schemas for `.well-known/fursona` and `.well-known/fursona.json` in JSON Schema and Cue formats. A website that parses and displays these schemas can be found at [fursona.gmem.ca](https://fursona.gmem.ca/), with its source code available at [well-known-fursona](https://git.sr.ht/~gmem/well-known-fursona), a small SvelteKit+Tailwind application deployed on Vercel to utilize their edge functions.
 
-To get started creating a new plugin, you can follow these steps:
+## Installation
 
-1. Initialize a new plugin from the starter with `gatsby new`
+Install the plugin using npm or yarn:
 
-```shell
-gatsby new my-plugin https://github.com/gatsbyjs/gatsby-starter-plugin
+```bash
+npm install gatsby-plugin-fursona
 ```
 
-If you already have a Gatsby site, you can use it. Otherwise, you can [create a new Gatsby site](https://www.gatsbyjs.com/docs/tutorial/getting-started/part-0/#create-a-gatsby-site) to test your plugin.
+or
 
-Your directory structure will look similar to this:
-
-```text
-/my-gatsby-site
-├── gatsby-config.js
-└── /src
-    └── /pages
-        └── /index.js
-/my-plugin
-├── gatsby-browser.js
-├── gatsby-node.js
-├── gatsby-ssr.js
-├── index.js
-├── package.json
-└── README.md
+```bash
+yarn add gatsby-plugin-fursona
 ```
 
-With `my-gatsby-site` being your Gatsby site, and `my-plugin` being your plugin. You could also include the plugin in your [site's `plugins` folder](https://www.gatsbyjs.com/docs/loading-plugins-from-your-local-plugins-folder/).
+## Configuration
 
-2. Include the plugin in a Gatsby site
-
-Inside of the `gatsby-config.js` file of your site (in this case, `my-gatsby-site`), include the plugin in the `plugins` array:
+Add the plugin to your `gatsby-config.js` file with the necessary options:
 
 ```javascript
 module.exports = {
   plugins: [
-    // other gatsby plugins
-    // ...
-    require.resolve(`../my-plugin`),
+    {
+      resolve: `gatsby-plugin-fursona`,
+      options: {
+        siteUrl: `https://your-site-url.com`, // Required if relativePaths is false
+        relativePaths: false, // Use relative paths for assets
+        jsonExtension: false, // Output schema as fursona.json instead of fursona
+        sonas: [
+          {
+            name: 'Your Fursona Name',
+            pronouns: 'They/Them',
+            gender: 'Non-binary',
+            species: 'Wolf-Dragon Hybrid',
+            description: 'A vibrant pink and red cross between a dragon and a hyena.',
+            ref: './path/to/your/ref.png',
+            avatar: './path/to/your/avatar.png',
+            age: 25,
+            birthdate: '1970-01-01T00:00:00+00:00', // ISO format
+            colors: [
+              "#ff0000",
+              "#0f0",
+              "#00f"
+            ],
+          },
+        ],
+      },
+    },
   ],
 }
 ```
 
-The line `require.resolve('../my-plugin')` is what accesses the plugin based on its filepath on your computer, and adds it as a plugin when Gatsby runs.
+## Options
 
-_You can use this method to test and develop your plugin before you publish it to a package registry like npm. Once published, you would instead install it and [add the plugin name to the array](https://www.gatsbyjs.com/docs/using-a-plugin-in-your-site/). You can read about other ways to connect your plugin to your site including using `npm link` or `yarn workspaces` in the [doc on creating local plugins](https://www.gatsbyjs.com/docs/creating-a-local-plugin/#developing-a-local-plugin-that-is-outside-your-project)._
+- `siteUrl` (string, required if `relativePaths` is false): The base URL of your site.
+- `relativePaths` (boolean, default: false): Use relative paths for asset URLs.
+- `jsonExtension` (boolean, default: false): Output schema as `fursona.json` instead of `fursona`.
+- `sonas` (array, required): An array of fursona objects with the following properties:
+  - `name` (string): Name of the fursona.
+  - `pronouns` (string): Pronouns of the fursona.
+  - `gender` (string): Gender of the fursona.
+  - `species` (string): Species of the fursona.
+  - `description` (string): Description of the fursona.
+  - `ref` (string): Path to the reference image of the fursona.
+  - `avatar` (string): Path to the avatar image of the fursona.
+  - `age` (number): Age of the fursona.
+  - `birthdate` (string, ISO date format): Birthdate of the fursona.
+  - `colors` (array of strings): Colors associated with the fursona.
 
-3. Verify the plugin was added correctly
+## Usage
 
-The plugin added by the starter implements a single Gatsby API in the `gatsby-node` that logs a message to the console. When you run `gatsby develop` or `gatsby build` in the site that implements your plugin, you should see this message.
+After configuring the plugin, it will generate a `.well-known/fursona` file (or `.well-known/fursona.json` if `jsonExtension` is true) in the public directory of your Gatsby site. This file contains the fursona data in JSON format.
 
-You can verify your plugin was added to your site correctly by running `gatsby develop` for the site.
+## Example
 
-You should now see a message logged to the console in the preinit phase of the Gatsby build process:
-
-```shell
-$ gatsby develop
-success open and validate gatsby-configs - 0.033s
-success load plugins - 0.074s
-Loaded gatsby-starter-plugin
-success onPreInit - 0.016s
-...
+```json
+{
+  "sonas": [
+    {
+      "name": "Your Fursona Name",
+      "pronouns": "They/Them",
+      "gender": "Non-binary",
+      "species": "Wolf-Dragon Hybrid",
+      "description": "A vibrant pink and red cross between a dragon and a hyena.",
+      "ref": "https://your-site-url.com/fursonas/your-ref-image.png",
+      "avatar": "https://your-site-url.com/fursonas/your-avatar-image.png",
+      "age": 25,
+      "birthdate": "1970-01-01T00:00:00+00:00",
+      "colors": [
+        "#ff0000",
+        "#0f0",
+        "#00f"
+      ]
+    }
+  ]
+}
 ```
 
-4. Rename the plugin in the `package.json`
+## Additional Information
 
-When you clone the site, the information in the `package.json` will need to be updated. Name your plugin based off of [Gatsby's conventions for naming plugins](https://www.gatsbyjs.com/docs/naming-a-plugin/).
+This plugin copies the fursona reference and avatar images to the `public/fursonas` directory and updates their paths in the generated JSON file. Ensure the paths provided in the `sonas` array are correct and point to existing image files.
 
-## 🧐 What's inside?
+## Contribution
 
-This starter generates the [files Gatsby looks for in plugins](https://www.gatsbyjs.com/docs/files-gatsby-looks-for-in-a-plugin/).
+Feel free to open issues or submit pull requests for enhancements or bug fixes.
 
-```text
-/my-plugin
-├── .gitignore
-├── gatsby-browser.js
-├── gatsby-node.js
-├── gatsby-ssr.js
-├── index.js
-├── LICENSE
-├── package.json
-└── README.md
-```
+## License
 
-- **`.gitignore`**: This file tells git which files it should not track / not maintain a version history for.
-- **`gatsby-browser.js`**: This file is where Gatsby expects to find any usage of the [Gatsby browser APIs](https://www.gatsbyjs.com/docs/browser-apis/) (if any). These allow customization/extension of default Gatsby settings affecting the browser.
-- **`gatsby-node.js`**: This file is where Gatsby expects to find any usage of the [Gatsby Node APIs](https://www.gatsbyjs.com/docs/node-apis/) (if any). These allow customization/extension of default Gatsby settings affecting pieces of the site build process.
-- **`gatsby-ssr.js`**: This file is where Gatsby expects to find any usage of the [Gatsby server-side rendering APIs](https://www.gatsbyjs.com/docs/ssr-apis/) (if any). These allow customization of default Gatsby settings affecting server-side rendering.
-- **`index.js`**: A file that will be loaded by default when the plugin is [required by another application](https://docs.npmjs.com/creating-node-js-modules#create-the-file-that-will-be-loaded-when-your-module-is-required-by-another-application0). You can adjust what file is used by updating the `main` field of the `package.json`.
-- **`LICENSE`**: This plugin starter is licensed under the 0BSD license. This means that you can see this file as a placeholder and replace it with your own license.
-- **`package.json`**: A manifest file for Node.js projects, which includes things like metadata (the plugin's name, author, etc). This manifest is how npm knows which packages to install for your project.
-- **`README.md`**: A text file containing useful reference information about your plugin.
+This plugin is licensed under the 0BSD License.
 
-## 🎓 Learning Gatsby
+---
 
-If you're looking for more guidance on plugins, how they work, or what their role is in the Gatsby ecosystem, check out some of these resources:
-
-- The [Creating Plugins](https://www.gatsbyjs.com/docs/creating-plugins/) section of the docs has information on authoring and maintaining plugins yourself.
-- The conceptual guide on [Plugins, Themes, and Starters](https://www.gatsbyjs.com/docs/plugins-themes-and-starters/) compares and contrasts plugins with other pieces of the Gatsby ecosystem. It can also help you [decide what to choose between a plugin, starter, or theme](https://www.gatsbyjs.com/docs/plugins-themes-and-starters/#deciding-which-to-use).
-- The [Gatsby plugin library](https://www.gatsbyjs.com/plugins/) has over 1750 official as well as community developed plugins that can get you up and running faster and borrow ideas from.
+Enjoy using the Gatsby Plugin Fursona! If you encounter any issues or have any questions, please reach out.
